@@ -5,11 +5,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def predict(df, ticker):
+    """
+    Predicts future stock prices using a pre-trained LSTM model and plots the forecast.
+    Args:
+        df (pd.DataFrame): DataFrame containing historical stock data with a 'Close' column and a datetime index.
+        ticker (str): Stock ticker symbol used to load the corresponding LSTM model and save the plot.
+    Returns:
+        None
+    Side Effects:
+        - Saves a plot of historical and forecasted prices to 'plots/{ticker}_LSTM_predictions.png'.
+    Notes:
+        - Assumes the LSTM model is saved at 'models/{ticker}_lstm_model.h5'.
+        - Forecasts the next 180 business days based on the last 60 days of closing prices.
+        - Requires the following libraries: numpy, pandas, matplotlib.pyplot, sklearn.preprocessing.MinMaxScaler, keras.models.load_model.
+    """
+
+    # Scale the data
     series = df['Close'].values.reshape(-1, 1)
     scaler = MinMaxScaler()
     scaled_series = scaler.fit_transform(series)
 
     time_step = 60
+    # Load the pre-trained LSTM model
     model = load_model(f'models/{ticker}_lstm_model.h5')
     
     # Forecast next 189 days

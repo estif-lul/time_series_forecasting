@@ -16,6 +16,7 @@ def fetch_data(ticker: str, start: str, end: str) -> pd.DataFrame:
         pd.DataFrame: Historical price data.
     """
     try:
+        # Download data from Yahoo Finance
         data = yf.download(ticker, start=start, end=end)
         if data.empty:
             raise ValueError(f"No data returned for {ticker}. Check ticker or date range.")
@@ -40,6 +41,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         df.info()
         df = df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
         df.dropna(inplace=True)
+        # Convert 'Date' to datetime and set as index
         df['Date'] = pd.to_datetime(df['Date'])
         df.sort_values('Date', inplace=True)
         df.set_index('Date', inplace=True)
@@ -59,6 +61,7 @@ def add_features(ticker, df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: Data with additional features.
     """
     try:
+        # Add daily returns and rolling statistics
         df[ticker]['Daily Return'] = df['Close'].pct_change()
         df[ticker]['Rolling Mean'] = df['Daily Return'].rolling(window=21).mean()
         df[ticker]['Rolling Std'] = df['Daily Return'].rolling(window=21).std()
@@ -78,6 +81,7 @@ def test_stationarity(series: pd.Series) -> Dict[str, float]:
         dict: ADF statistic, p-value, and critical values.
     """
     try:
+        # Perform Augmented Dickey-Fuller test
         result = adfuller(series.dropna())
         return {
             'ADF Statistic': result[0],

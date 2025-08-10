@@ -7,6 +7,7 @@ from sklearn.metrics import mean_absolute_error, root_mean_squared_error
 import matplotlib.pyplot as plt
 
 def load_data(ticker):
+
     df = pd.read_csv(f'data/{ticker}.csv', parse_dates=['Date'], index_col='Date')
     return df
 
@@ -31,6 +32,18 @@ def test_stationarity(series: pd.Series) -> Dict[str, float]:
         print(f"Error performing ADF test: {e}")
         return {}
 def forcast(df, ticker):
+    """
+    Performs ARIMA time series forecasting on the 'Close' column of the provided DataFrame for a given ticker symbol.
+    The function tests for stationarity using the Augmented Dickey-Fuller (ADF) test, applies differencing if necessary,
+    splits the data into training and testing sets, automatically selects the best ARIMA parameters, fits the ARIMA model,
+    generates forecasts, evaluates the forecast using MAE and RMSE, and saves a plot comparing actual vs. forecasted values.
+    Args:
+        df (pd.DataFrame): DataFrame containing a 'Close' column with time series data indexed by date.
+        ticker (str): The ticker symbol for the time series being forecasted (used for labeling and saving plots).
+    Returns:
+        None. Prints evaluation metrics and saves a forecast plot to the 'plots' directory.
+    """
+
     adf_results = test_stationarity(df['Close'])
     print(f"ADF Test Results for {ticker}:")
     for key, value in adf_results.items():
