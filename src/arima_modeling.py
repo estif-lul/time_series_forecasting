@@ -31,7 +31,7 @@ def test_stationarity(series: pd.Series) -> Dict[str, float]:
     except Exception as e:
         print(f"Error performing ADF test: {e}")
         return {}
-def forcast(df, ticker):
+def train_model(df, ticker):
     """
     Performs ARIMA time series forecasting on the 'Close' column of the provided DataFrame for a given ticker symbol.
     The function tests for stationarity using the Augmented Dickey-Fuller (ADF) test, applies differencing if necessary,
@@ -94,7 +94,7 @@ def main():
         if df.empty:
             print(f"No data found for {ticker}.")
             continue
-        forcast(df, ticker)
+        train_model(df, ticker)
         
 
 if __name__ == "__main__":
